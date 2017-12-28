@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis3.mappers.StudentMapper"><!-- 命名空间 -->
+	<!--type属性指的是（typeAliases别名）javabean实体类（数据库表对应的Javabean就叫实体类） id属性指的是resultMap的标识 -->
+	<resultMap type="Student" id="StudentResult">
+		<!--构造方法赋值 -->
+		<constructor>
+			<idArg javaType="Integer" column="id" /><!--构造方法来构造id -->
+			<!-- <arg javaType="String" column="name"/> <arg javaType="String" column="email"/> 
+				<arg javaType="Date" column="birth"/> <arg javaType="com.bean.PhoneNumber" 
+				jdbcType="VARCHAR" column="phone"/> -->
+		</constructor>
+
+		<!--property属性指定Javabean的属性名称， column是数据库的字段名 -->
+		<!-- <id property="id" column="id" /> --><!-- id是主键映射的标识 -->
+		<!--表的其他字段映射 -->
+		<result property="name" column="name" /><!-- result是普通映射的标识 -->
+		<result property="email" column="email" />
+		<result property="birth" column="birth" />
+		<result property="phone" column="phone" />
+	</resultMap>
+	<resultMap type="Student" id="StudentWithAddressResult"
+		extends="StudentResult">
+		<result property="address.addressid" column="addressid" />
+		<result property="address.street" column="street" />
+		<result property="address.city" column="city" />
+		<result property="address.state" column="state" />
+		<result property="address.zip" column="zip" />
+		<result property="address.country" column="country" />
+
+	</resultMap>
+
+
+
+	<select id="getStudentAddressById" parameterType="int"
+		resultMap="StudentWithAddressResult">
+		select s.name,s.id,s.email,a.city from student s,address a where
+		s.sid=a.addressid and id=#{id}
+		<!-- select s.id,a.name from student s inner join address a on s.sid=a.id 
+			where id=#{id} -->
+	</select>
+
+	<!--selectMap -->
+	<select id="getAllStudents" resultMap="StudentResult">
+		select * from student
+	</select>
+
+
+	<!-- 返回类型是map时，取值是列名要大写 -->
+	<!--id标识别名， 不能重复相同，就是方法名 -->
+	<select id="findAllStudents" resultMap="StudentResult"><!--resultMap(引用外部的)与 resultType(直接返回)不能同时使用 -->
+		select * from student
+	</select>
+	<!--parameterType方法（所带的参数）的参数类型，resultType方法的返回类型 -->
+	<select id="getStuById" parameterType="int" resultType="Student"><!--id对应方法名，必须需一致,实际上是将值存到map中，然后在存到bean中 -->
+		select * from student where id=#{id}
+	</select>
+
+
+
+	<select id="getStuByPage" parameterType="map" resultMap="StudentResult">
+		<!-- select * from (select s.*,rownum rn from student s) where rn &gt;#{start} 
+			and rn &lt;=#{end} -->
+<![CDATA[select * from (select s.*,rownum rn from student s) where rn>#{start} and rn<=#{end}]]>
+	</select>
+
+
+	<!--id标识别名， 不能重复相同，就是方法名 parameterType方法（所带的参数）的参数类型 -->
+	<insert id="insertStudent" parameterType="Student"><!--自增属性useGeneratedKeys="true"，但oracle数据库不支持 -->
+		<!-- selectKey产生序列的下一个值，给bean数据id赋值 keyProperty属性指定bean的id属性 resultType返回类型 
+			order="BEFORE"把产生的序列值赋给bean的id属性，并在执行insert语句之间赋值 -->
+		<selectKey keyProperty="id" resultType="int" order="BEFORE">
+			select student_seq.nextval from dual
+		</selectKey>
+		insert into student(id,name,email,birth,phone)
+		values(#{id},#{name},#{email},#{birth},#{phone})
+	</insert>
+
+	<!-- 更新操作 普通语句更新不能为空，用set标签更新可以选择性更新数据库的数据 -->
+	<update id="updateStuById" parameterType="Student">
+		<!-- update student set name=#{name},email=#{email},birth=#{birth},phone=#{phone} 
+			where id=#{id} -->
+		update student
+
+		<!--通过set标签更新表 -->
+		<set>
+			<if test="name!=null">
+				name=#{name},
+			</if>
+			<if test="email!=null">
+				email=#{email},
+			</if>
+			<if test="phone!=null">
+				phone=#{phone},
+			</if>
+			<if test="birth!=null">
+				birth=#{birth},
+			</if>
+		</set>
+		where id=#{id}
+	</update>
+
+
+	<select id="selStu" resultMap="StudentResult">
+		select * from student where name=#{param1}
+	</select>
+
+
+
+	<!-- 删除 -->
+	<delete id="deleteStuById" parameterType="int">
+		delete from student where id=#{id}
+	</delete>
+	<!-- <select id="getStuByIdMap" parameterType="int " resultType="map"> select 
+		* from student where id=#{id} </select> -->
+
+</mapper>

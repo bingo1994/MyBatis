@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- 命名空间 -->
+<mapper namespace="com.mybatis3.mappers.EmployeeMapper">
+
+<!--一对一配置  -->
+<resultMap type="Address" id="AddressResult">
+<id  property="addressid" column="addressid"/>
+<result property="addressid" column="addressid"/>
+<result property="street" column="street"/>
+<result property="city" column="city"/>
+<result property="state" column="state"/>
+<result property="zip" column="zip"/>
+<result property="country" column="country"/>
+</resultMap>
+
+<resultMap type="Employee" id="EmployeeResult">
+<id property="eid" column="eid"/>
+<result property="empname" column="empname"/>
+<result property="empaddress" column="empaddress"/>
+<result property="salary" column="salary"/>
+<result property="birth" column="birth"/>
+ <association property="address" resultMap="AddressResult"></association>
+</resultMap>
+
+<!--一对多  -->
+<resultMap type="Dept" id="DeptEmpResult">
+<id property="did" column="did"/>
+<result property="deptname" column="deptname"/>
+<result property="deptdesp" column="deptdesp"/>
+<collection property="employee" resultMap="EmployeeResult"></collection>
+</resultMap>
+
+</mapper>

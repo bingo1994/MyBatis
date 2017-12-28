@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mybatis3.mappers.RoleUserMapper">
+<resultMap type="UserTest" id="UserResult">
+<id property="id" column="u_id"/>
+<result property="uname" column="uname"/>
+<result property="uaddress" column="uaddress"/>
+</resultMap>
+
+<resultMap type="TRole" id="TRoleResult">
+<id property="rid" column="rid"/>
+<result property="rname" column="rname"/>
+<result property="rdesp" column="rdesp"/>
+<collection property="users" resultMap="UserResult"></collection><!--引用 resultMap="UserResult" -->
+</resultMap>
+
+<select id="getRoleUsers" parameterType="int" resultMap="TRoleResult"><!--查找指定角色  -->
+select u.u_id,u.uname,u.uaddress,r.rid,r.rname,r.rdesp from user_test u,t_role r,user_role ur 
+where u.u_id=ur.uuid and r.rid=ur.rrid and r.rid=#{rid}
+</select>
+
+</mapper>

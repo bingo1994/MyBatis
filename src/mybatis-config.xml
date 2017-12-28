@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration><!-- 子标签要按顺序 -->
+
+	<!--加载db.properties属性文件 -->
+	<properties resource="db.properties"></properties><!-- classpath就是到src目录下 Spring框架可以使用，MyBatis框架不能使用 -->
+
+	<typeAliases> <!--类型别名定义，可以定义多个类型别名 -->
+		<typeAlias alias="Student" type="com.bean.Student" />
+		<typeAlias alias="Room" type="com.bean.Room" />
+		<typeAlias alias="Person" type="com.bean.Person" />
+		<typeAlias alias="Tutors" type="com.bean.Tutors" />
+		<typeAlias alias="Course" type="com.bean.Course" />
+
+		<typeAlias alias="UserTest" type="com.bean.UserTest" />
+		<typeAlias alias="TRole" type="com.bean.TRole" />
+		<typeAlias alias="UserRole" type="com.bean.UserRole" />
+		<typeAlias alias="Employee" type="com.bean.Employee" />
+		<typeAlias alias="Address" type="com.bean.Address" />
+		<typeAlias alias="Dept" type="com.bean.Dept" />
+		<!-- <typeAlias alias="Student" type="com.bean.Student"/> --><!-- alias别名的名称， type指定别名所指定的类名 -->
+		<!-- 给这个包下面的所有类定义别名 -->
+		<!-- <package name="com.bean"/> -->
+	</typeAliases>
+
+	<!--配置自定义类型处理器 -->
+	<typeHandlers>
+		<typeHandler handler="com.mybatis3.typehandle.PhoneTypeHandle" />
+	</typeHandlers>
+
+	<!-- 环境的配置，默认的开发环境是development -->
+	<environments default="development">
+		<environment id="development">
+			<!-- 事务管理器 -->
+			<transactionManager type="JDBC"></transactionManager>
+			<!-- 数据源配置，连接数据库POOLED使用连接池方式连接数据库 -->
+			<dataSource type="POOLED"><!--UNPOOLED连接数据库，用一次连接一次，关闭一次 -->
+				<!-- 数据库驱动类名 -->
+				<property name="driver" value="${jdbc.driver}" />
+				<property name="url" value="${jdbc.url}" />
+				<property name="username" value="${jdbc.username}" />
+				<property name="password" value="${jdbc.password}" />
+
+				<!-- <property name="driver" value="oracle.jdbc.driver.OracleDriver"/> 
+					<property name="url" value="jdbc:oracle:thin:@localhost:1521:orcl"/> <property 
+					name="username" value="zhangsan"/> <property name="password" value="123"/> -->
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers><!-- 映射器(对应表的映射的SQL(增删改查)语句) -->
+		<mapper resource="com/mybatis3/mappers/TuTorsCourseMapper.xml"></mapper>
+		<mapper resource="com/mybatis3/mappers/PersonRoomMapper.xml"></mapper>
+		<mapper resource="com/mybatis3/mappers/UserRoleMapper.xml"></mapper>
+		<mapper resource="com/mybatis3/mappers/RoleUserMapper.xml"></mapper>
+		<mapper resource="com/mybatis3/mappers/StudentMapper.xml"></mapper>
+		<!-- <mapper class="com.mybatis3.mappers.EmployeeMapper" /> -->
+		<mapper resource="com/mybatis3/mappers/EmployeeMapper.xml"></mapper>
+		<mapper class="com.mybatis3.mappers.TutorsMapper"></mapper><!--没有xml配置文件，把接口配置进来  -->
+		<!-- 用resource来定义 --><!--配置文件，增删改查 -->
+		<!-- <mapper class="com.mybatis3.mappers.StudentMapper"/> --><!-- 用class来定义 -->
+		<!-- <package name="com.mybatis3.mappers"/> --><!-- 用包来定义 ,包下面所有的映射文件 -->
+	</mappers>
+
+</configuration>

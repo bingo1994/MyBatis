@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 命名空间 -->
+<mapper namespace="com.mybatis3.mappers.PersonRoomMapper">
+
+
+<resultMap type="Person" id="PersonWithRoomResult">
+<id property="pid" column="pid"/>
+<result property="name" column="name"/>
+<result property="age" column="age"/>
+<result property="address" column="address"/>
+<result property="room.roomnum" column="roomnum"/><!--room是Personbean中的对象  -->
+<result property="room.roomtype" column="roomtype"/>
+</resultMap>
+
+
+<!-- 使用嵌套结果resultMap实现一对一关系映射  -->
+<!--
+ <resultMap type="Room" id="RoomResult">
+<id property="rid" column="rid"/>
+<result property="roomnum" column="roomnum"/>
+<result property="roomtype" column="roomtype"/>
+</resultMap> 
+<resultMap type="Person" id="PersonWithRoomResult">
+<id property="pid" column="pid"/>
+<result property="name" column="name"/>
+<result property="age" column="age"/>
+<result property="address" column="address"/>
+<association property="room" resultMap="RoomResult"></association>
+</resultMap>
+ -->
+
+
+<!--
+ <resultMap type="Person" id="PersonWithRoomResult">
+<id property="pid" column="pid"/>
+<result property="name" column="name"/>
+<result property="age" column="age"/>
+<result property="address" column="address"/>
+<association property="room" javaType="Room">
+<id property="rid" column="rid"/>
+<result property="roomnum" column="roomnum"/>
+<result property="roomtype" column="roomtype"/>
+</association>
+</resultMap>
+ -->
+
+<!-- 使用select嵌套查询实现一对一关系映射 -->
+<!-- <resultMap type="Room" id="RoomResult">
+<id property="rid" column="rid"/>
+<result property="roomnum" column="roomnum"/>
+<result property="roomtype" column="roomtype"/>
+</resultMap> 
+<select id="findRoomById" parameterType="int" resultMap="RoomResult">
+select * from room where rid=#{rid}
+</select>
+<resultMap type="Person" id="PersonWithRoomResult">
+<id property="pid" column="pid"/>
+<result property="name" column="name"/>
+<result property="age" column="age"/>
+<result property="address" column="address"/>
+column属性的rid是person表中的 
+<association property="room" column="rid" select="findRoomById"></association>
+</resultMap>
+<select id="getPersonRoomTest" resultMap="PersonWithRoomResult">
+select * from person
+</select> -->
+
+
+<select id="getPersonInRoom" resultMap="PersonWithRoomResult">
+select p.name,p.pid,p.age,p.address,r.roomnum,r.roomtype from person p,room r where p.rid=r.rid
+</select>
+
+</mapper>
